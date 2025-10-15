@@ -98,8 +98,18 @@ const validCredentials: ICredentials = {
     const confirmPasswordField = page.locator("#password-confirm");
     const submitButton = page.locator("//*[contains(@class, 'btn btn-primary')]");
     const succesPage = page.locator("h2");
-    const backToForm = page.locator("//*[contains(@class, 'btn btn-primary')]");
 
+    const fullNameRegistered = page.locator("#fullName");
+    const addressRegistered = page.locator("#address");
+    const emailRegistered = page.locator("#email");
+    const phoneRegistered = page.locator("#phone");
+    const countryRegistered = page.locator("#country");
+    const genderRegistered = page.locator("#gender");
+    const languageRegistered = page.locator("#language");
+    const skillsRegistered = page.locator("#skills");
+    const hobbiesRegistered = page.locator("#hobbies");
+    const dateOfBirthRegistered = page.locator("#dateOfBirth");
+    const passwordRegistered = page.locator("#password");
 
     await firstNameField.fill(validCredentials.firstName);
     await lastNameField.fill(validCredentials.lastName);
@@ -121,8 +131,18 @@ const validCredentials: ICredentials = {
     await confirmPasswordField.fill(validCredentials.confirmPassword);
     await submitButton.click();
     await expect(succesPage).toHaveText("Registration Details");
-    await backToForm.click();
-    await expect(registrationForm).toBeVisible();
+
+    await expect(fullNameRegistered).toHaveText(validCredentials.firstName + " " + validCredentials.lastName);
+    await expect(addressRegistered).toHaveText(validCredentials.address);
+    await expect(emailRegistered).toHaveText(validCredentials.email);
+    await expect(phoneRegistered).toHaveText(validCredentials.phone.toString());
+    await expect(countryRegistered).toHaveText(validCredentials.country);
+    await expect(genderRegistered).toHaveText(validCredentials.gender);
+    await expect(languageRegistered).toHaveText(validCredentials.language.join(", "));
+    await expect(skillsRegistered).toHaveText(validCredentials.skills);
+    await expect(hobbiesRegistered).toHaveText(validCredentials.hobbies.join(", "));
+    await expect(dateOfBirthRegistered).toHaveText(validCredentials.birthDate.day + " " + validCredentials.birthDate.month + " " + validCredentials.birthDate.year);
+    await expect(passwordRegistered).toHaveText("*".repeat(validCredentials.password.length));
 
   });
 });
