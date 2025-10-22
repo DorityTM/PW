@@ -18,7 +18,7 @@
 
 
 import { test, expect } from "@playwright/test";
-import { invalidRegCreds } from "./users_reg_data";
+import { invalidRegCreds } from "../../../data/login-form-demo/users_reg_data";
 
 test.describe("[REGISTRATION FORM][NEGATIVE]", () => {
   const url = "https://anatoly-karpovich.github.io/demo-login-form/";
