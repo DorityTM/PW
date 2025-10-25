@@ -9,26 +9,46 @@ import { test, expect, Page } from "@playwright/test";
 import { error } from "console";
 
 async function getTableRow(page: Page, email: string) {
-  const table = page.locator("#table2");
-  const rows = await table.locator("tbody tr").all();
+  const table = page.locator('#table2');
 
-  const row = await Promise.all(
-    rows.map(async (r) => ({
-      row: r,
-      text: await r.locator("td:nth-child(3)").innerText(),
-    }))
-  ).then((arr) => arr.find(({ text }) => text === email)?.row);
+  const row = table.locator('tbody tr', { has: page.locator('td', { hasText: email }) }).first();
 
-  return row
-    ? {
-        "Last Name": await row.locator("td:nth-child(1)").innerText(),
-        "First Name": await row.locator("td:nth-child(2)").innerText(),
-        Email: email,
-        Due: await row.locator("td:nth-child(4)").innerText(),
-        "Web Site": await row.locator("td:nth-child(5)").innerText(),
-      }
-    : error(`No row found for email: ${email}`);
+  if ((await row.count()) === 0) {
+    throw new Error(`No row found for email: ${email}`);
+  }
+
+  const [lastName, firstName, emailCell, due, website] = await row.locator('td').allInnerTexts();
+
+  return {
+    "Last Name": lastName,
+    "First Name": firstName,
+    Email: emailCell,
+    Due: due,
+    "Web Site": website,
+  };
 }
+
+// async function getTableRow(page: Page, email: string) {
+//   const table = page.locator("#table2");
+//   const rows = await table.locator("tbody tr").all();
+
+//   const row = await Promise.all(
+//     rows.map(async (r) => ({
+//       row: r,
+//       text: await r.locator("td:nth-child(3)").innerText(),
+//     }))
+//   ).then((arr) => arr.find(({ text }) => text === email)?.row);
+
+//   return row
+//     ? {
+//         "Last Name": await row.locator("td:nth-child(1)").innerText(),
+//         "First Name": await row.locator("td:nth-child(2)").innerText(),
+//         Email: email,
+//         Due: await row.locator("td:nth-child(4)").innerText(),
+//         "Web Site": await row.locator("td:nth-child(5)").innerText(),
+//       }
+//     : error(`No row found for email: ${email}`);
+// }
 
 // async function getTableRow(page: Page, email: string) {
 //   const table = page.locator("#table2");
