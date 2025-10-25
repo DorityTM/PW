@@ -5,6 +5,7 @@ import { generateProductData } from "data/salesPortal/products/generateProductDa
 // import { MANUFACTURERS } from "data/salesPortal/products/manufacturers";
 // import { IProduct } from "data/types/product.types";
 import { HomePage } from "ui/pages/home.page";
+import { LoginPage } from "ui/pages/login.page";
 import { AddNewProductPage } from "ui/pages/products/addNewProduct.page";
 import { ProductsListPage } from "ui/pages/products/productsList.page";
 
@@ -89,22 +90,26 @@ test.describe("[Sales Portal] [Products]", async () => {
   });
 
   test("Add new product", async ({ page }) => {
+    const loginPage = new LoginPage(page);
     const homePage = new HomePage(page);
     const productsListPage = new ProductsListPage(page);
     const addNewProductPage = new AddNewProductPage(page);
 
     //login page
-    const emailInput = page.locator("#emailinput");
-    const passwordInput = page.locator("#passwordinput");
-    const loginButton = page.locator("button[type='submit']");
+    // const emailInput = page.locator("#emailinput");
+    // const passwordInput = page.locator("#passwordinput");
+    // const loginButton = page.locator("button[type='submit']");
+    // await expect(loginPage.emailInput).toBeVisible();
+    // await loginPage.emailInput.fill(credentials.username);
+    // await loginPage.passwordInput.fill(credentials.password);
+    // await loginPage.loginButton.click();
 
-    await homePage.open();
-
-    await expect(emailInput).toBeVisible();
-    await emailInput.fill(credentials.username);
-    await passwordInput.fill(credentials.password);
-    await loginButton.click();
-
+    await homePage.open(); 
+    await expect(loginPage.uniqueElement).toBeVisible({timeout: 6000});
+    await loginPage.fillCredentials(credentials.username, credentials.password);
+    await loginPage.loginButtonClick();
+  
+  
     await homePage.waitForOpened();
     await homePage.clickOnViewModule("Products");
     await productsListPage.waitForOpened();
