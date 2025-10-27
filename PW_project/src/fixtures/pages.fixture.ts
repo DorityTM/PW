@@ -3,14 +3,19 @@ import {
   expect,
   // Page
 } from "@playwright/test";
+import { LoginPage } from "ui/pages/login.page";
 import { HomePage } from "ui/pages/home.page";
 import { AddNewProductPage } from "ui/pages/products/addNewProduct.page";
 import { ProductsListPage } from "ui/pages/products/productsList.page";
+import { ProductDeleteModal } from "ui/pages/products/delete.modal";
+
 
 export interface IPages {
   homePage: HomePage;
   productsListPage: ProductsListPage;
   addNewProductPage: AddNewProductPage;
+  loginPage: LoginPage;
+  productDeleteModal: ProductDeleteModal;
 }
 
 export const test = base.extend<IPages>({
@@ -22,6 +27,9 @@ export const test = base.extend<IPages>({
   },
   addNewProductPage: async ({ page }, use) => {
     await use(new AddNewProductPage(page));
+  },
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
   },
 });
 
