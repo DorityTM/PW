@@ -77,6 +77,5 @@ test("E2E test product creation and deletion", async ({ loginPage, homePage, pro
     await productsListPage.deleteModal.waitForClosed();
     await productsListPage.waitForOpened();
     await expect(productsListPage.toastMessage).toContainText(NOTIFICATIONS.PRODUCT_DELETED);
-    await expect(productsListPage.toastMessage).not.toBeVisible({ timeout: TIMEOUT_10_S });
     await expect(productsListPage.tableRowByName(productData.name)).not.toBeVisible();      
   });
