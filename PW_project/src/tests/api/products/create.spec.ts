@@ -6,7 +6,7 @@ import _ from "lodash";
 import { validateResponse } from "utils/validation/validateResponse.utils";
 import { IProduct } from "data/types/product.types";
 import { addNewProductPositiveTC, addNewProductNegativeTC } from "./productsDDT.spec";
-import { ERRORS } from "data/salesPortal/notifications";
+import { ERRORS, NOTIFICATIONS } from "data/salesPortal/notifications";
 
 test.describe("[API] [Sales Portal] [Products]", () => {
   let id = "";
@@ -82,7 +82,7 @@ test.describe("[HW25_Task1] [Products with valid data are created]", () => {
         validateResponse(createdProduct, {
           status: negativeTC.expectedStatus || STATUS_CODES.BAD_REQUEST,
           IsSuccess: false,
-          ErrorMessage: "Incorrect request body",
+          ErrorMessage: NOTIFICATIONS.BAD_REQUEST,
         });
       });
     }
