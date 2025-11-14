@@ -6,7 +6,8 @@ import _ from "lodash";
 import { validateResponse } from "utils/validation/validateResponse.utils";
 import { IProduct } from "data/types/product.types";
 import { addNewProductPositiveTC, addNewProductNegativeTC } from "./productsDDT.spec";
-import { ERRORS, NOTIFICATIONS } from "data/salesPortal/notifications";
+
+import { RESPONSE_ERRORS } from "data/salesPortal/errors";
 
 test.describe("[API] [Sales Portal] [Products]", () => {
   let id = "";
@@ -50,17 +51,20 @@ test.describe("[API] [Sales Portal] [Products_DDT_Suite]", () => {
   let id = "";
   let token = "";
 
+  test.beforeAll(async ({ loginApiService }) => {
+    token = await loginApiService.loginAsAdmin();
+  });
+
   test.afterEach(async ({ productsApiService }) => {
     if (id) await productsApiService.delete(token, id);
   });
 
 test.describe("[HW25_Task1] [Products with valid data are created]", () => {
-    for (const positiveTC of addNewProductPositiveTC) {
-      test(`${positiveTC.title}`, async ({ loginApiService, productsApi }) => {
-        token = await loginApiService.loginAsAdmin();
-        const createdProduct = await productsApi.create(positiveTC.productData as IProduct, token);
+    for (const { title, productData, expectedStatus }  of addNewProductPositiveTC) {
+      test(`${title}`, async ({ productsApi }) => {
+        const createdProduct = await productsApi.create(productData as IProduct, token);
         validateResponse(createdProduct, {
-          status: positiveTC.expectedStatus || STATUS_CODES.CREATED,
+          status: expectedStatus || STATUS_CODES.CREATED,
           schema: createProductSchema,
           IsSuccess: true,
           ErrorMessage: null,
@@ -69,20 +73,19 @@ test.describe("[HW25_Task1] [Products with valid data are created]", () => {
         id = createdProduct.body.Product._id;
 
         const actualProductData = createdProduct.body.Product;
-        expect(_.omit(actualProductData, ["_id", "createdOn"])).toEqual(positiveTC.productData);
+        expect(_.omit(actualProductData, ["_id", "createdOn"])).toEqual(productData);
       });
     }
   });
 
   test.describe("[HW25_Task2] [Products with invalid data are NOT created]", () => {
-    for (const negativeTC of addNewProductNegativeTC) {
-      test(`${negativeTC.title}`, async ({ loginApiService, productsApi }) => {
-        token = await loginApiService.loginAsAdmin();
-        const createdProduct = await productsApi.create(negativeTC.productData as IProduct, token);
+    for (const { title, productData, expectedStatus } of addNewProductNegativeTC) {
+      test(`${title}`, async ({ productsApi }) => {
+        const createdProduct = await productsApi.create(productData as IProduct, token);
         validateResponse(createdProduct, {
-          status: negativeTC.expectedStatus || STATUS_CODES.BAD_REQUEST,
+          status: expectedStatus || STATUS_CODES.BAD_REQUEST,
           IsSuccess: false,
-          ErrorMessage: NOTIFICATIONS.BAD_REQUEST,
+          ErrorMessage: RESPONSE_ERRORS.BAD_REQUEST,
         });
       });
     }
@@ -105,6 +108,7 @@ test.describe("[HW25] [Unique] [Product duplicate name conflict]", () => {
         IsSuccess: true,
         ErrorMessage: null,
       });
+      
       id = createdProduct.body.Product._id;
       const createdProductData = createdProduct.body.Product as Partial<IProduct>;
       const duplicatePayload: Partial<IProduct> = {
@@ -117,7 +121,7 @@ test.describe("[HW25] [Unique] [Product duplicate name conflict]", () => {
       validateResponse(duplicateResp, {
         status: STATUS_CODES.CONFLICT,
         IsSuccess: false,
-        ErrorMessage: ERRORS.CONFLICT(createdProductData.name || initialPayload.name),
+        ErrorMessage: RESPONSE_ERRORS.CONFLICT(createdProductData.name || initialPayload.name),
       });
     });
   });

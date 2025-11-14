@@ -15,7 +15,7 @@
 import { generateProductData } from "data/salesPortal/products/generateProductData";
 import { IProduct } from "data/types/product.types";
 import { STATUS_CODES } from "data/statusCodes";
-import { NOTIFICATIONS } from "data/salesPortal/notifications";
+import { RESPONSE_ERRORS } from "data/salesPortal/errors";
 import { faker } from "@faker-js/faker";
 import _ from "lodash";
 
@@ -94,108 +94,108 @@ export const addNewProductNegativeTC: ICreateNewProductTC[] = [
     title: "Product with 2 character in name is not created",
     productData: generateProductData({ name: faker.string.alphanumeric({ length: 2 }) }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with 41 character in name is not created",
     productData: generateProductData({ name: faker.string.alphanumeric({ length: 41 }) }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product contains > 1 spaces in product name is not created",
     productData: generateProductData({ name: "Madagascar  Centella  Toning  Toner" }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product contains special characters in name is not created",
     productData: generateProductData({ name: faker.string.alphanumeric({ length: 7 }) + "*&^%$#@!{}" }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product without required name is not created",
     productData: _.omit(generateProductData(), "name"),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with empty name is not created",
     productData: generateProductData({ name: "" }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product without manufacturer is not created",
     productData: _.omit(generateProductData(), "manufacturer"),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
    {
     title: "Product with 0$ price is not created",
     productData: generateProductData({ price: 0 }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with 99999,99$ price is not created",
     productData: generateProductData({ price: 99999.99 }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product without price is not created",
     productData: _.omit(generateProductData(), "price"),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with negative price is not created",
     productData: generateProductData({ price: -1 }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with non-integer price is not created",
     productData: generateProductData({ price: faker.string.alphanumeric({ length: 4 }) as any}),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with negative amount is not created",
     productData: generateProductData({ amount: -1 }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with 1000 amount is not created",
     productData: generateProductData({ amount: 1000 }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product without amount is not created",
     productData: _.omit(generateProductData(), "amount"),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with non-integer amount is not created",
     productData: generateProductData({ amount: faker.string.alphanumeric({ length: 4 }) as any}),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with notes > 250 characters is not created",
     productData: generateProductData({ notes: faker.string.alphanumeric({ length: 251 }) }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   },
   {
     title: "Product with < or > symbols in notes is not created",
     productData: generateProductData({ notes: "Invalid notes contain <symbols>" }),
     expectedStatus: STATUS_CODES.BAD_REQUEST,
-    expectedErrorMessage: NOTIFICATIONS.BAD_REQUEST
+    expectedErrorMessage: RESPONSE_ERRORS.BAD_REQUEST
   }
 ];
