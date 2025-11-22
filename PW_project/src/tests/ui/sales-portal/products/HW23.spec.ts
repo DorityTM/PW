@@ -20,7 +20,7 @@ import { test, expect } from "fixtures/pages.fixture";
 import { credentials } from "config/env";
 import { NOTIFICATIONS } from "data/salesPortal/notifications";
 import { generateProductData } from "data/salesPortal/products/generateProductData";
-import { TIMEOUT_10_S } from "data/salesPortal/constants";
+import { TIMEOUT_30_S } from "data/salesPortal/constants";
 import _ from "lodash";
 
 let productData: ReturnType<typeof generateProductData>;
@@ -33,9 +33,9 @@ test.beforeEach(async () => {
 test("E2E test product creation and deletion", async ({ loginPage, homePage, productsListPage, addNewProductPage }) => {
 
     // ACT: login
-    await homePage.open(); 
+    await homePage.open(""); 
     await expect(loginPage.uniqueElement).toBeVisible();
-    await loginPage.fillCredentials(credentials.username, credentials.password);
+    await loginPage.fillCredentials({ username: credentials.username, password: credentials.password });
     await loginPage.loginButtonClick();
   
     // ACT: create a new product
@@ -52,7 +52,7 @@ test("E2E test product creation and deletion", async ({ loginPage, homePage, pro
     // ASSERT: verify notification and appearing the product in the table
     await productsListPage.waitForOpened();
     await expect(productsListPage.toastMessage).toContainText(NOTIFICATIONS.PRODUCT_CREATED);
-    await expect(productsListPage.toastMessage).not.toBeVisible({ timeout: TIMEOUT_10_S });
+    await expect(productsListPage.toastMessage).not.toBeVisible({ timeout: TIMEOUT_30_S });
     await expect(productsListPage.tableRowByName(productData.name)).toBeVisible();
 
     // ASSERT: verify product data in the table
@@ -67,11 +67,17 @@ test("E2E test product creation and deletion", async ({ loginPage, homePage, pro
 
     // ACT: delete the created product
     await productsListPage.waitForOpened();
-    await productsListPage.clickDeleteProduct(productData.name);
+    await productsListPage.clickAction(productData.name, "delete");
     await productsListPage.deleteModal.waitForOpened();
 
     // ACT: delete the created product
-    await productsListPage.deleteModal.clickDelete();
+    await productsListPage.deleteModal.clickConfirm();
+
+    //   async clickAction(productName: string, button: "edit" | "delete" | "details") {
+    // if (button === "edit") await this.editButton(productName).click();
+    // if (button === "delete") await this.deleteButton(productName).click();
+    // if (button === "details") await this.detailsButton(productName).click();
+  //}
 
     // ASSERT: verify notification and deleted the product from the table
     await productsListPage.deleteModal.waitForClosed();

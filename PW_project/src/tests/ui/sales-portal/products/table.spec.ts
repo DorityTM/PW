@@ -17,7 +17,7 @@ test.describe("[Sales Portal] [Products]", () => {
     const passwordInput = page.locator("#passwordinput");
     const loginButton = page.locator("button[type='submit']");
 
-    await homePage.open();
+    await homePage.open("");
 
     await expect(emailInput).toBeVisible();
     await emailInput.fill(credentials.username);

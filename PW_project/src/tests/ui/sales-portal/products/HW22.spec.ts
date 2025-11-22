@@ -32,9 +32,9 @@ test("COMPARE NEW PRODUCT WITH DATA IN TABLE", async ({ page }) => {
     const addNewProductPage = new AddNewProductPage(page);
 
     // ACT: login
-    await homePage.open(); 
+    await homePage.open(""); 
     await expect(loginPage.uniqueElement).toBeVisible({ timeout: TIMEOUT_5_S });
-    await loginPage.fillCredentials(credentials.username, credentials.password);
+    await loginPage.fillCredentials({ username: credentials.username, password: credentials.password });
     await loginPage.loginButtonClick();
   
     // ACT: create a new product

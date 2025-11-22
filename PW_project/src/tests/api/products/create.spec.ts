@@ -2,12 +2,11 @@ import { test, expect } from "fixtures/api.fixture";
 import { generateProductData } from "data/salesPortal/products/generateProductData";
 import { createProductSchema } from "data/schemas/products/create.schema";
 import { STATUS_CODES } from "data/statusCodes";
-import _ from "lodash";
 import { validateResponse } from "utils/validation/validateResponse.utils";
 import { IProduct } from "data/types/product.types";
 import { addNewProductPositiveTC, addNewProductNegativeTC } from "./productsDDT.spec";
-
 import { RESPONSE_ERRORS } from "data/salesPortal/errors";
+import _ from "lodash";
 
 test.describe("[API] [Sales Portal] [Products]", () => {
   let id = "";

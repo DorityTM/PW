@@ -1,4 +1,4 @@
-import { test as base, expect } from "fixtures/pages.fixture";
+import { test as base, expect } from "fixtures";
 import { credentials, SALES_PORTAL_URL } from "config/env";
 
 export const test = base.extend<{
