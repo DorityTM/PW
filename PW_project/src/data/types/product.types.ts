@@ -1,3 +1,4 @@
+import { ICreatedOn } from "./core.types";
 import { MANUFACTURERS } from "data/salesPortal/products/manufacturers";
 import { ID, IResponseFields, SortOrder } from "./core.types";
 
@@ -7,10 +8,6 @@ export interface IProduct {
   price: number;
   amount: number;
   notes?: string;
-}
-
-export interface ICreatedOn {
-  createdOn: string;
 }
 
 // export type IProductInTable = Pick<IProduct, "name" | "manufacturer" | "price"> & { createdOn: string };
@@ -28,12 +25,19 @@ export interface IProductsResponse extends IResponseFields {
   Products: IProductFromResponse[];
 }
 
+export interface ITopProducts extends Pick<IProduct, "name"> {
+  sales: number;
+}
+export interface IOrderProductFromResponse extends IProduct, ID {
+  received: boolean;
+}
+
 export interface IProductsSortedResponse extends IProductsResponse {
   total: number;
   page: number;
   limit: number;
   search: string;
-  manufacturer: string[];
+  manufacturer: MANUFACTURERS[];
   sorting: {
     sortField: ProductsSortField;
     sortOrder: SortOrder;
