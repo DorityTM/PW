@@ -3,6 +3,8 @@ import { ICustomer, ICustomerFromResponse } from "data/types/customer.types";
 import { getRandomEnumValue } from "utils/enum.utils";
 import { ObjectId } from "bson";  
 import { COUNTRY } from "../country";
+
+//TODO: refactor generator for names (issues with Ireland names)
 export function generateCustomerData(params?: Partial<ICustomer>): ICustomer {
   return {
     email: faker.internet.email(),

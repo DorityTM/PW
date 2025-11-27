@@ -19,25 +19,25 @@ export class CustomersListUIService {
     await this.addNewCustomerPage.waitForOpened();
   }
 
-  async openDetailsModal(CustomerName: string) {
-    await this.customersListPage.detailsButton(CustomerName).click();
+  async openDetailsModal(customerName: string) {
+    await this.customersListPage.detailsButton(customerName).click();
     await this.customersListPage.detailsModal.waitForOpened();
   }
 
-  async openDeleteModal(CustomerName: string) {
-    await this.customersListPage.clickAction(CustomerName, "delete");
+  async openDeleteModal(customerName: string) {
+    await this.customersListPage.clickAction(customerName, "delete");
     await this.customersListPage.deleteModal.waitForOpened();
   }
 
-  async deleteCustomer(CustomerName: string) {
-    await this.customersListPage.clickAction(CustomerName, "delete");
+  async deleteCustomer(customerName: string) {
+    await this.customersListPage.clickAction(customerName, "delete");
     await this.customersListPage.deleteModal.waitForOpened();
     await this.customersListPage.deleteModal.clickConfirm();
     await this.customersListPage.deleteModal.waitForClosed();
   }
 
-  async editCustomer(CustomerName: string) {
-    await this.customersListPage.clickAction(CustomerName, "edit");
+  async editCustomer(customerName: string) {
+    await this.customersListPage.clickAction(customerName, "edit");
     await this.customersListPage.deleteModal.waitForOpened();
     await this.customersListPage.deleteModal.clickConfirm();
     await this.customersListPage.deleteModal.waitForClosed();
@@ -61,7 +61,7 @@ export class CustomersListUIService {
     });
   }
 
-  async assertCustomerInTable(CustomerName: string, { visible }: { visible: boolean }) {
-    await expect(this.customersListPage.tableRowByName(CustomerName)).toBeVisible({ visible });
+  async assertCustomerInTable(customerEmail: string, { visible }: { visible: boolean }) {
+    await expect(this.customersListPage.tableRowByEmail(customerEmail)).toBeVisible({ visible });
   }
 }
