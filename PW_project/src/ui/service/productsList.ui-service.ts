@@ -1,6 +1,7 @@
 import { expect, Page } from "@playwright/test";
 import { IProductDetails } from "data/types/product.types";
 import { AddNewProductPage } from "ui/pages/products/addNewProduct.page";
+import { EditProductPage } from "ui/pages/products/editProduct.page";
 import { ProductsListPage } from "ui/pages/products/productsList.page";
 import { convertToFullDateAndTime } from "utils/date.utils";
 import _ from "lodash";
@@ -8,10 +9,12 @@ import _ from "lodash";
 export class ProductsListUIService {
   productsListPage: ProductsListPage;
   addNewProductPage: AddNewProductPage;
+  editProductPage: EditProductPage;
 
   constructor(private page: Page) {
     this.productsListPage = new ProductsListPage(page);
     this.addNewProductPage = new AddNewProductPage(page);
+    this.editProductPage = new EditProductPage(page);
   }
 
   async openAddNewProductPage() {
@@ -31,6 +34,13 @@ export class ProductsListUIService {
 
   async deleteProduct(productName: string) {
     await this.productsListPage.clickAction(productName, "delete");
+    await this.productsListPage.deleteModal.waitForOpened();
+    await this.productsListPage.deleteModal.clickConfirm();
+    await this.productsListPage.deleteModal.waitForClosed();
+  }
+
+  async editProduct(productName: string) {
+    await this.productsListPage.clickAction(productName, "edit");
     await this.productsListPage.deleteModal.waitForOpened();
     await this.productsListPage.deleteModal.clickConfirm();
     await this.productsListPage.deleteModal.waitForClosed();
