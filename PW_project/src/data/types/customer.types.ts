@@ -8,21 +8,25 @@ type Country = keyof typeof COUNTRY;
 export interface ICustomer {
   email: string;
   name: string;
-  country: Country;
+  country: COUNTRY;
   city: string;
   street: string;
-  house: string;
-  flat: string;
+  house: number;
+  flat: number;
   phone: string;
   notes?: string;
 }
 
 export interface ICustomerInTable extends Pick<ICustomer, "email" | "name" | "country">, ICreatedOn {}
 
-export type ICustomerDetails = Required<ICustomer>;
+export interface ICustomerDetails extends Required<ICustomer>, ICreatedOn {};
 
 export interface ICustomerFromResponse extends Required<ICustomer>, ICreatedOn, ID {}
 export interface ICustomerResponse extends IResponseFields {
+  Customer: ICustomerFromResponse;
+}
+
+export interface ICustomersResponse extends IResponseFields {
   Customer: ICustomerFromResponse;
 }
 
