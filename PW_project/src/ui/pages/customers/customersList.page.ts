@@ -14,8 +14,8 @@ export class CustomersListPage extends SalesPortalPage {
     this.page.locator("table tbody tr", { has: this.page.locator("td", { hasText: customerEmail }) });
   readonly tableRowByIndex = (index: number) => this.page.locator("table tbody tr").nth(index);
   readonly nameCell = (customerEmail: string) => this.tableRowByEmail(customerEmail).locator("td").nth(0);
-  readonly priceCell = (customerEmail: string) => this.tableRowByEmail(customerEmail).locator("td").nth(1);
-  //readonly manufacturerCell = (customerEmail: string) => this.tableRowByEmail(customerEmail).locator("td").nth(2);
+  readonly emailCell = (customerEmail: string) => this.tableRowByEmail(customerEmail).locator("td").nth(1);
+  readonly countryCell = (customerEmail: string) => this.tableRowByEmail(customerEmail).locator("td").nth(2);
   readonly createdOnCell = (emailOrIndex: string | number) =>
     typeof emailOrIndex === "string"
       ? this.tableRowByEmail(emailOrIndex).locator("td").nth(3)
