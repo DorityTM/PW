@@ -5,6 +5,7 @@ import { IProductResponse } from "data/types/product.types";
 import { EditProductPage, ProductsListPage } from "ui/pages/products";
 import { apiConfig } from "config/apiConfig";
 import _ from "lodash";
+import { logStep } from "utils/report/logStep.utils.js"
 
 export class EditProductUIService {
   editProductPage: EditProductPage;
@@ -15,11 +16,13 @@ export class EditProductUIService {
     this.productsListPage = new ProductsListPage(page);
   }
 
+  @logStep("OPEN EDIT PRODUCT PAGE")
   async open(id: string) {
     await this.editProductPage.open(`products/${id}/edit`);
     await this.editProductPage.waitForOpened();
   }
 
+  @logStep("EDIT PRODUCT")
   async edit(id: string) {
     const data = generateProductData();
     await this.editProductPage.fillForm(data);

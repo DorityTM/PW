@@ -4,10 +4,12 @@ import { createCustomerSchema } from  "data/schemas/customers/create.schema";
 import { STATUS_CODES } from "data/statusCodes";
 import { ICustomer } from "data/types/customer.types";
 import { validateResponse } from "utils/validation/validateResponse.utils";
+import { logStep } from "utils/report/logStep.utils.js";
 
 export class CustomersApiService {
   constructor(private customersApi: CustomersApi) {}
 
+  @logStep("CREATE CUSTOMER - API")
   async create(token: string, customerData?: ICustomer) {
     const data = generateCustomerData(customerData);
     const response = await this.customersApi.create(data, token);
@@ -20,6 +22,7 @@ export class CustomersApiService {
     return response.body.Customer;
   }
 
+  @logStep("DELETE CUSTOMER - API")
   async delete(token: string, id: string) {
     const response = await this.customersApi.delete(id, token);
     validateResponse(response, {

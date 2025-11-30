@@ -4,6 +4,7 @@ import { AddNewCustomerPage } from "ui/pages/customers/addNewCustomer.page";
 import { CustomersListPage } from "ui/pages/customers/customersList.page";
 import { convertToFullDateAndTime } from "utils/date.utils";
 import _ from "lodash";
+import { logStep } from "utils/report/logStep.utils.js"
 
 export class CustomersListUIService {
   customersListPage: CustomersListPage;
@@ -14,21 +15,25 @@ export class CustomersListUIService {
     this.addNewCustomerPage = new AddNewCustomerPage(page);
   }
 
+  @logStep("OPEN ADD NEW CUSTOMER PAGE")
   async openAddNewCustomerPage() {
     await this.customersListPage.clickAddNewCustomer();
     await this.addNewCustomerPage.waitForOpened();
   }
 
+  @logStep("OPEN CUSTOMER DETAILS MODAL")
   async openDetailsModal(customerName: string) {
     await this.customersListPage.detailsButton(customerName).click();
     await this.customersListPage.detailsModal.waitForOpened();
   }
 
+  @logStep("OPEN DELETE CUSTOMER MODAL")
   async openDeleteModal(customerName: string) {
     await this.customersListPage.clickAction(customerName, "delete");
     await this.customersListPage.deleteModal.waitForOpened();
   }
 
+  @logStep("DELETE CUSTOMER")
   async deleteCustomer(customerName: string) {
     await this.customersListPage.clickAction(customerName, "delete");
     await this.customersListPage.deleteModal.waitForOpened();
@@ -36,6 +41,7 @@ export class CustomersListUIService {
     await this.customersListPage.deleteModal.waitForClosed();
   }
 
+  @logStep("EDIT CUSTOMER")
   async editCustomer(customerName: string) {
     await this.customersListPage.clickAction(customerName, "edit");
     await this.customersListPage.deleteModal.waitForOpened();
@@ -43,12 +49,14 @@ export class CustomersListUIService {
     await this.customersListPage.deleteModal.waitForClosed();
   }
 
+  @logStep("SEARCH CUSTOMER")
   async search(text: string) {
     await this.customersListPage.fillSearchInput(text);
     await this.customersListPage.clickSearch();
     await this.customersListPage.waitForOpened();
   }
 
+  @logStep("OPEN CUSTOMERS LIST PAGE")
   async open() {
     await this.customersListPage.open("customers");
     await this.customersListPage.waitForOpened();
@@ -61,6 +69,7 @@ export class CustomersListUIService {
     });
   }
 
+  @logStep("CHECK CUSTOMER EXISTS IN TABLE")
   async assertCustomerInTable(customerEmail: string, { visible }: { visible: boolean }) {
     await expect(this.customersListPage.tableRowByEmail(customerEmail)).toBeVisible({ visible });
   }

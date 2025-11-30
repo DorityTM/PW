@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { IResponse } from "data/types/core.types";
+import { logStep } from "utils/report/logStep.utils.js"
 
 export abstract class BasePage {
   constructor(protected page: Page) {}
@@ -26,5 +27,11 @@ export abstract class BasePage {
       headers: response.headers(),
       body: (await response.json()) as U,
     };
+  }
+
+  @logStep("GET AUTH TOKEN FROM COOKIES")
+  async getAuthToken() {
+    const token = (await this.page.context().cookies()).find((c) => c.name === "Authorization")!.value;
+    return token;
   }
 }

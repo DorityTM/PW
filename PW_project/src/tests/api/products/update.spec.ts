@@ -4,7 +4,7 @@ import { createProductSchema } from "data/schemas/products/create.schema";
 import { STATUS_CODES } from "data/statusCodes";
 import _ from "lodash";
 import { validateResponse } from "utils/validation/validateResponse.utils";
-
+import { TAGS } from "data/tags";
 
 test.describe("[API] [Sales Portal] [Products]", () => {
   let id = "";
@@ -14,26 +14,30 @@ test.describe("[API] [Sales Portal] [Products]", () => {
     await productsApiService.delete(token, id);
   });
 
-    test("Update product", async ({ loginApiService, productsApiService, productsApi }) => {
-    //TODO: Preconditions
-    token = await loginApiService.loginAsAdmin();
-    const createdProduct = await productsApiService.create(token);
-    id = createdProduct._id;
+  test(
+    "Update product",
+    { tag: [TAGS.SMOKE, TAGS.REGRESSION, TAGS.API, TAGS.PRODUCTS] },
+    async ({ loginApiService, productsApiService, productsApi }) => {
+      // Preconditions
+      token = await loginApiService.loginAsAdmin();
+      const createdProduct = await productsApiService.create(token);
+      id = createdProduct._id;
 
-    //TODO: Action
-    const updatedProductData = generateProductData();
-    const updatedProductResponse = await productsApi.update(id, updatedProductData, token);
+      // Action
+      const updatedProductData = generateProductData();
+      const updatedProductResponse = await productsApi.update(id, updatedProductData, token);
 
-    //TODO: Assert
-    validateResponse(updatedProductResponse, {
-      status: STATUS_CODES.OK,
-      schema: createProductSchema,
-      IsSuccess: true,
-      ErrorMessage: null,
-    });
+      // Assert
+      validateResponse(updatedProductResponse, {
+        status: STATUS_CODES.OK,
+        schema: createProductSchema,
+        IsSuccess: true,
+        ErrorMessage: null,
+      });
 
-    const updatedProduct = updatedProductResponse.body.Product;
-    expect(_.omit(updatedProduct, ["_id", "createdOn"])).toEqual(updatedProductData);
-    expect(id).toBe(updatedProduct._id);
-  });
+      const updatedProduct = updatedProductResponse.body.Product;
+      expect(_.omit(updatedProduct, ["_id", "createdOn"])).toEqual(updatedProductData);
+      expect(id).toBe(updatedProduct._id);
+    },
+  );
 });
