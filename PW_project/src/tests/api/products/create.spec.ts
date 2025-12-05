@@ -9,6 +9,7 @@ import { RESPONSE_ERRORS } from "data/salesPortal/errors";
 import _ from "lodash";
 import { TAGS } from "data/tags";
 
+//TODO: Refactor tests for API - add new login service/
 test.describe("[API] [Sales Portal] [Products]", () => {
   let id = "";
   let token = "";
