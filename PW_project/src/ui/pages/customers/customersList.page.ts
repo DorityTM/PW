@@ -3,6 +3,8 @@ import { ConfirmationModal } from "../confirmation.modal";
 import { CustomerDetailsModal } from "./details.modal";
 import { CustomerTableHeader, ICustomerInTable } from "data/types/customer.types";
 import { COUNTRY } from "data/salesPortal/country";
+import { logStep } from "utils/report/logStep.utils.js";
+
 export class CustomersListPage extends SalesPortalPage {
   readonly detailsModal = new CustomerDetailsModal(this.page);
   readonly deleteModal = new ConfirmationModal(this.page);
@@ -37,20 +39,23 @@ export class CustomersListPage extends SalesPortalPage {
 
   readonly uniqueElement = this.addNewCustomerButton;
 
+  @logStep("CLICK ADD NEW CUSTOMER")
   async clickAddNewCustomer() {
     await this.addNewCustomerButton.click();
   }
 
+  @logStep("GET CUSTOMER DATA")
   async getCustomerData(customerEmail: string): Promise<ICustomerInTable> {
     const [email, name, country, createdOn] = await this.tableRowByEmail(customerEmail).locator("td").allInnerTexts();
     return {
-     email: email!,
+      email: email!,
       name: name!,
       country: country! as COUNTRY,
       createdOn: createdOn!,
     };
   }
 
+  @logStep("GET CUSTOMER'S DATA IN TABLE")
   async getTableData(): Promise<ICustomerInTable[]> {
     const data: ICustomerInTable[] = [];
 
@@ -58,29 +63,33 @@ export class CustomersListPage extends SalesPortalPage {
     for (const row of rows) {
       const [email, name, country, createdOn] = await row.locator("td").allInnerTexts();
       data.push({
-         email: email!,
-      name: name!,
-      country: country! as COUNTRY,
-      createdOn: createdOn!,
+        email: email!,
+        name: name!,
+        country: country! as COUNTRY,
+        createdOn: createdOn!,
       });
     }
     return data;
   }
 
+  @logStep("CLICK ACTION BUTTON ON CUSTOMER LIST PAGE")
   async clickAction(customerName: string, button: "edit" | "delete" | "details") {
     if (button === "edit") await this.editButton(customerName).click();
     if (button === "delete") await this.deleteButton(customerName).click();
     if (button === "details") await this.detailsButton(customerName).click();
   }
 
+  @logStep("CLICK TABLE HEADER TO SORT ON CUSTOMER LIST PAGE")
   async clickTableHeader(name: CustomerTableHeader) {
     await this.tableHeaderNamed(name).click();
   }
 
+  @logStep("FILL SEARCH INPUT ON CUSTOMER LIST PAGE")
   async fillSearchInput(text: string) {
     await this.searchInput.fill(text);
   }
 
+  @logStep("CLICK SEARCH BUTTON ON CUSTOMER LIST PAGE")
   async clickSearch() {
     await this.searchButton.click();
   }

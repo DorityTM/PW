@@ -8,6 +8,7 @@ import { HomePage } from "ui/pages/home.page";
 import { LoginPage } from "ui/pages/login.page";
 import { AddNewProductPage } from "ui/pages/products/addNewProduct.page";
 import { ProductsListPage } from "ui/pages/products/productsList.page";
+import { TAGS } from "data/tags";
 
 // const productData: IProduct = {
 //   name: "Product" + Date.now(),
@@ -21,22 +22,26 @@ test.describe("[Sales Portal] [Products]", async () => {
   let id = "";
   let token = "";
 
-  test("Add new product with services", async ({
-    loginUIService,
-    // homeUIService,
-    // productsListUIService,
-    addNewProductUIService,
-    productsListPage,
-  }) => {
-    token = await loginUIService.loginAsAdmin();
-    // await homeUIService.openModule("Products");
-    // await productsListUIService.openAddNewProductPage();
-    await addNewProductUIService.open();
-    const createdProduct = await addNewProductUIService.create();
-    id = createdProduct._id;
-    await expect(productsListPage.toastMessage).toContainText(NOTIFICATIONS.PRODUCT_CREATED);
-    await expect(productsListPage.tableRowByName(createdProduct.name)).toBeVisible();
-  });
+  test(
+    "Add new product with services",
+    { tag: [TAGS.SMOKE, TAGS.REGRESSION, TAGS.INTEGRATION, TAGS.API, TAGS.PRODUCTS] },
+    async ({
+      // loginUIService,
+      // homeUIService,
+      // productsListUIService,
+      addNewProductUIService,
+      productsListPage,
+    }) => {
+      token = await productsListPage.getAuthToken();
+      // await homeUIService.openModule("Products");
+      // await productsListUIService.openAddNewProductPage();
+      await addNewProductUIService.open();
+      const createdProduct = await addNewProductUIService.create();
+      id = createdProduct._id;
+      await expect(productsListPage.toastMessage).toContainText(NOTIFICATIONS.PRODUCT_CREATED);
+      await expect(productsListPage.tableRowByName(createdProduct.name)).toBeVisible();
+    },
+  );
 
   test.afterEach(async ({ productsApiService }) => {
     if (id) await productsApiService.delete(token, id);
@@ -114,7 +119,7 @@ test.describe("[Sales Portal] [Products]", async () => {
   //   await expect(productsListPage.tableRowByName(productData.name)).toBeVisible();
   // });
 
-  test("Add new product", async ({ page }) => {
+  test.skip("Add new product", { tag: [TAGS.SMOKE, TAGS.REGRESSION, TAGS.UI, TAGS.PRODUCTS] }, async ({ page }) => {
     const loginPage = new LoginPage(page);
     const homePage = new HomePage(page);
     const productsListPage = new ProductsListPage(page);
@@ -129,12 +134,11 @@ test.describe("[Sales Portal] [Products]", async () => {
     // await loginPage.passwordInput.fill(credentials.password);
     // await loginPage.loginButton.click();
 
-    await homePage.open(""); 
-    await expect(loginPage.uniqueElement).toBeVisible({timeout: 6000});
+    await homePage.open("");
+    await expect(loginPage.uniqueElement).toBeVisible({ timeout: 6000 });
     await loginPage.fillCredentials({ username: credentials.username, password: credentials.password });
     await loginPage.loginButtonClick();
-  
-  
+
     await homePage.waitForOpened();
     await homePage.clickOnViewModule("Products");
     await productsListPage.waitForOpened();

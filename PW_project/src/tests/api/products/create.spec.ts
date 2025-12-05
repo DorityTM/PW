@@ -4,10 +4,12 @@ import { createProductSchema } from "data/schemas/products/create.schema";
 import { STATUS_CODES } from "data/statusCodes";
 import { validateResponse } from "utils/validation/validateResponse.utils";
 import { IProduct } from "data/types/product.types";
-import { addNewProductPositiveTC, addNewProductNegativeTC } from "./productsDDT.spec";
+import { addNewProductPositiveTC, addNewProductNegativeTC } from "../../../data/salesPortal/products/productsDDT";
 import { RESPONSE_ERRORS } from "data/salesPortal/errors";
 import _ from "lodash";
+import { TAGS } from "data/tags";
 
+//TODO: Refactor tests for API - add new login service/
 test.describe("[API] [Sales Portal] [Products]", () => {
   let id = "";
   let token = "";
@@ -16,35 +18,42 @@ test.describe("[API] [Sales Portal] [Products]", () => {
     if (id) await productsApiService.delete(token, id);
   });
 
-  test("Create Product", async ({ loginApiService, productsApi }) => {
-    token = await loginApiService.loginAsAdmin();
-    const productData = generateProductData();
-    const createdProduct = await productsApi.create(productData, token);
-    validateResponse(createdProduct, {
-      status: STATUS_CODES.CREATED,
-      schema: createProductSchema,
-      IsSuccess: true,
-      ErrorMessage: null,
-    });
+  test(
+    "Create Product",
+    { tag: [TAGS.SMOKE, TAGS.REGRESSION, TAGS.PRODUCTS] },
+    async ({ loginApiService, productsApi }) => {
+      token = await loginApiService.loginAsAdmin();
+      const productData = generateProductData();
+      const createdProduct = await productsApi.create(productData, token);
+      validateResponse(createdProduct, {
+        status: STATUS_CODES.CREATED,
+        schema: createProductSchema,
+        IsSuccess: true,
+        ErrorMessage: null,
+      });
 
-    id = createdProduct.body.Product._id;
+      id = createdProduct.body.Product._id;
 
-    const actualProductData = createdProduct.body.Product;
-    expect(_.omit(actualProductData, ["_id", "createdOn"])).toEqual(productData);
-  });
+      const actualProductData = createdProduct.body.Product;
+      expect(_.omit(actualProductData, ["_id", "createdOn"])).toEqual(productData);
+    },
+  );
 
-  test("NOT create product with invalid data", async ({ loginApiService, productsApi }) => {
-    token = await loginApiService.loginAsAdmin();
-    const productData = generateProductData();
-    const createdProduct = await productsApi.create({ ...productData, name: 123 } as unknown as IProduct, token);
-    validateResponse(createdProduct, {
-      status: STATUS_CODES.BAD_REQUEST,
-      IsSuccess: false,
-      ErrorMessage: "Incorrect request body",
-    });
-  });
+  test(
+    "NOT create product with invalid data",
+    { tag: [TAGS.SMOKE, TAGS.REGRESSION, TAGS.API, TAGS.PRODUCTS] },
+    async ({ loginApiService, productsApi }) => {
+      token = await loginApiService.loginAsAdmin();
+      const productData = generateProductData();
+      const createdProduct = await productsApi.create({ ...productData, name: 123 } as unknown as IProduct, token);
+      validateResponse(createdProduct, {
+        status: STATUS_CODES.BAD_REQUEST,
+        IsSuccess: false,
+        ErrorMessage: "Incorrect request body",
+      });
+    },
+  );
 });
-
 
 test.describe("[API] [Sales Portal] [Products_DDT_Suite]", () => {
   let id = "";
@@ -58,9 +67,9 @@ test.describe("[API] [Sales Portal] [Products_DDT_Suite]", () => {
     if (id) await productsApiService.delete(token, id);
   });
 
-test.describe("[HW25_Task1] [Products with valid data are created]", () => {
-    for (const { title, productData, expectedStatus }  of addNewProductPositiveTC) {
-      test(`${title}`, async ({ productsApi }) => {
+  test.describe("[HW25_Task1] [Products with valid data are created]", () => {
+    for (const { title, productData, expectedStatus } of addNewProductPositiveTC) {
+      test(`${title}`, { tag: [TAGS.E2E, TAGS.REGRESSION, TAGS.API, TAGS.PRODUCTS] }, async ({ productsApi }) => {
         const createdProduct = await productsApi.create(productData as IProduct, token);
         validateResponse(createdProduct, {
           status: expectedStatus || STATUS_CODES.CREATED,
@@ -79,7 +88,7 @@ test.describe("[HW25_Task1] [Products with valid data are created]", () => {
 
   test.describe("[HW25_Task2] [Products with invalid data are NOT created]", () => {
     for (const { title, productData, expectedStatus } of addNewProductNegativeTC) {
-      test(`${title}`, async ({ productsApi }) => {
+      test(`${title}`, { tag: [TAGS.E2E, TAGS.REGRESSION, TAGS.API, TAGS.PRODUCTS] }, async ({ productsApi }) => {
         const createdProduct = await productsApi.create(productData as IProduct, token);
         validateResponse(createdProduct, {
           status: expectedStatus || STATUS_CODES.BAD_REQUEST,
@@ -92,10 +101,13 @@ test.describe("[HW25_Task1] [Products with valid data are created]", () => {
 });
 
 test.describe("[HW25] [Unique] [Product duplicate name conflict]", () => {
-    let id = "";
-    let token = "";
+  let id = "";
+  let token = "";
 
-    test("Product with non-unique name is not created", async ({ loginApiService, productsApi }) => {
+  test(
+    "Product with non-unique name is not created",
+    { tag: [TAGS.E2E, TAGS.REGRESSION, TAGS.API, TAGS.PRODUCTS] },
+    async ({ loginApiService, productsApi }) => {
       token = await loginApiService.loginAsAdmin();
 
       const initialPayload = generateProductData();
@@ -107,7 +119,7 @@ test.describe("[HW25] [Unique] [Product duplicate name conflict]", () => {
         IsSuccess: true,
         ErrorMessage: null,
       });
-      
+
       id = createdProduct.body.Product._id;
       const createdProductData = createdProduct.body.Product as Partial<IProduct>;
       const duplicatePayload: Partial<IProduct> = {
@@ -122,5 +134,6 @@ test.describe("[HW25] [Unique] [Product duplicate name conflict]", () => {
         IsSuccess: false,
         ErrorMessage: RESPONSE_ERRORS.CONFLICT(createdProductData.name || initialPayload.name),
       });
-    });
-  });
+    },
+  );
+});

@@ -3,6 +3,7 @@ import { SalesPortalPage } from "../salesPortal.page";
 import { MANUFACTURERS } from "data/salesPortal/products/manufacturers";
 import { ProductDetailsModal } from "./details.modal";
 import { ConfirmationModal } from "../confirmation.modal";
+import { logStep } from "utils/report/logStep.utils.js"
 
 export class ProductsListPage extends SalesPortalPage {
   readonly detailsModal = new ProductDetailsModal(this.page);
@@ -40,10 +41,12 @@ export class ProductsListPage extends SalesPortalPage {
 
   readonly uniqueElement = this.addNewProductButton;
 
+  @logStep("CLICK ADD NEW PRODUCT")
   async clickAddNewProduct() {
     await this.addNewProductButton.click();
   }
 
+  @logStep("GET PRODUCT DATA")
   async getProductData(productName: string): Promise<IProductInTable> {
     //Variant 1
     // return {
@@ -77,6 +80,7 @@ export class ProductsListPage extends SalesPortalPage {
     };
   }
 
+  @logStep("GET PRODUCTS DATA IN TABLE")
   async getTableData(): Promise<IProductInTable[]> {
     const data: IProductInTable[] = [];
 
@@ -93,20 +97,24 @@ export class ProductsListPage extends SalesPortalPage {
     return data;
   }
 
+  @logStep("CLICK ACTION BUTTON ON PRODUCTS LIST PAGE")
   async clickAction(productName: string, button: "edit" | "delete" | "details") {
     if (button === "edit") await this.editButton(productName).click();
     if (button === "delete") await this.deleteButton(productName).click();
     if (button === "details") await this.detailsButton(productName).click();
   }
 
+  @logStep("CLICK TABLE HEADER ON PRODUCTS LIST PAGE")
   async clickTableHeader(name: ProductsTableHeader) {
     await this.tableHeaderNamed(name).click();
   }
 
+  @logStep("FILL SEARCH INPUT ON PRODUCTS LIST PAGE")
   async fillSearchInput(text: string) {
     await this.searchInput.fill(text);
   }
 
+  @logStep("CLICK SEARCH BUTTON ON PRODUCTS LIST PAGE")
   async clickSearch() {
     await this.searchButton.click();
   }
