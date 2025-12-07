@@ -4,12 +4,13 @@ import { getRandomEnumValue } from "utils/enum.utils";
 import { ObjectId } from "bson";  
 import { COUNTRY } from "../country";
 
+const DEFAULT_NAME = "John";
 function onlyLetters(input: string, max: number) {
   const cleaned = input
     .replace(/[^A-Za-z ]+/g, " ")
     .replace(/\s{2,}/g, " ")
     .trim();
-  return cleaned.slice(0, max) || "John";
+  return cleaned.slice(0, max) || DEFAULT_NAME;
 }
 
 function alphaNumSpace(input: string, max: number) {
@@ -26,7 +27,8 @@ function validEmail() {
 
 function validPhone() {
   // '+' and 10-15 digits to match strict validator without precision issues
-  const digits = faker.string.numeric({ length: 15, allowLeadingZeros: true });
+  const length = faker.number.int({ min: 10, max: 15 });
+  const digits = faker.string.numeric({ length, allowLeadingZeros: true });
   return "+" + digits;
 }
 
@@ -53,20 +55,6 @@ export function generateCustomerData(params?: Partial<ICustomer>): ICustomer {
 
   return { ...data, ...params };
 }
-// export function generateCustomerData(params?: Partial<ICustomer>): ICustomer {
-//   return {
-//     email: faker.internet.email(),
-//     name: faker.person.fullName(),
-//     country: getRandomEnumValue(COUNTRY),
-//     city: faker.location.city(),
-//     street: faker.location.street(),
-//     house: faker.number.int({ min: 1, max: 999 }),
-//     flat: faker.number.int({ min: 1, max: 9999 }),
-//     phone: faker.phone.number({ style: "international" }),
-//     notes: faker.string.alphanumeric({ length: 250 }),
-//     ...params
-//   };
-// }
 
 export function generateCustomerResponseData(params?: Partial<ICustomer>): ICustomerFromResponse {
   const initial = generateCustomerData(params);
