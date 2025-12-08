@@ -368,7 +368,7 @@ This project is licensed under the ISC License.
 
 ## 👨‍💻 Author
 
-**Tatsiana Davidziuk**
+**Tatsiana Davidziuk** - [GitHub Profile](https://github.com/DorityTM)
 
 ---
 
