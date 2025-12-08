@@ -28,12 +28,16 @@ A comprehensive test automation framework built with **Playwright** and **TypeSc
 - **🔄 API & UI Testing**: Comprehensive test coverage
 - **📊 Data-Driven Testing**: DDT approach with test case arrays
 - **🎯 Page Object Model**: Maintainable and scalable test structure
-- **📈 Advanced Reporting**: HTML reports, Allure integration
+- **📈 Advanced Reporting**: HTML reports, Allure integration with environment info
 - **🔧 Test Fixtures**: Business logic and API service fixtures
-- **🏷️ Test Tagging**: Smoke, regression, E2E test categorization
-- **🎨 Visual Testing**: Screenshot comparisons
-- **📝 Detailed Logging**: Step-by-step test execution tracking
-- **🔒 Authentication**: Secure login service with token management
+- **🏷️ Test Tagging**: Comprehensive tagging system (@smoke, @regression, @e2e, @api, @ui, @integration, @products, @customers, @orders)
+- **🎨 Visual Testing**: Screenshot comparisons and video recording
+- **📝 Detailed Logging**: Step-by-step test execution tracking with @logStep decorator
+- **🔒 Authentication**: Secure login service with token management and storage state
+- **⚡ Test Setup**: Automated authentication setup with session persistence
+- **🏗️ Modular Architecture**: Separate services for different business domains
+- **🔍 Schema Validation**: JSON schema validation for API responses
+- **📦 Mock Data**: Test data generators for products, customers, and metrics
 
 ## 🛠️ Tech Stack
 
@@ -44,6 +48,9 @@ A comprehensive test automation framework built with **Playwright** and **TypeSc
 | **Faker.js** | 10.1.0 | Test data generation |
 | **Lodash** | 4.17.21 | Utility functions |
 | **Allure** | 3.4.2 | Test reporting |
+| **AJV** | 8.17.1 | JSON schema validation |
+| **BSON** | 7.0.0 | MongoDB object serialization |
+| **Moment.js** | 2.30.1 | Date manipulation |
 | **ESLint** | 9.38.0 | Code linting |
 | **Prettier** | 3.6.2 | Code formatting |
 | **Husky** | 9.1.7 | Git hooks |
@@ -53,6 +60,8 @@ A comprehensive test automation framework built with **Playwright** and **TypeSc
 ```
 PW_project/
 ├── 📁 src/
+│   ├── 📁 .auth/                  # Authentication storage
+│   │   └── user.json             # User session state
 │   ├── 📁 api/                    # API service layer
 │   │   └── 📁 services/           # API service implementations
 │   ├── 📁 config/                 # Configuration files
@@ -60,30 +69,57 @@ PW_project/
 │   │   └── env.ts                # Environment variables
 │   ├── 📁 data/                   # Test data and types
 │   │   ├── 📁 salesPortal/        # Sales portal specific data
+│   │   │   ├── 📁 products/       # Product-related data
+│   │   │   ├── 📁 customers/      # Customer-related data
+│   │   │   ├── 📁 metrics/        # Metrics-related data
+│   │   │   ├── constants.ts       # Application constants
+│   │   │   ├── notifications.ts   # Notification messages
+│   │   │   └── errors.ts          # Error messages
 │   │   ├── 📁 schemas/            # JSON schemas for validation
 │   │   ├── 📁 types/              # TypeScript type definitions
 │   │   ├── statusCodes.ts         # HTTP status codes
-│   │   └── tags.ts                # Test tags
+│   │   └── tags.ts                # Test tags enum
 │   ├── 📁 fixtures/               # Test fixtures
 │   │   ├── api.fixture.ts         # API test fixtures
-│   │   └── business.fixture.ts    # UI test fixtures
+│   │   ├── business.fixture.ts    # UI test fixtures
+│   │   ├── pages.fixture.ts       # Page fixtures
+│   │   ├── mock.fixture.ts        # Mock data fixtures
+│   │   └── index.ts              # Fixture exports
+│   ├── 📁 mock/                   # Mock data and responses
 │   ├── 📁 tests/                  # Test suites
 │   │   ├── 📁 api/                # API tests
-│   │   │   └── 📁 products/       # Product API tests
+│   │   │   ├── 📁 products/       # Product API tests
+│   │   │   └── 📁 login/          # Login API tests
 │   │   └── 📁 ui/                 # UI tests
-│   │       └── 📁 sales-portal/   # Sales portal UI tests
+│   │       ├── 📁 sales-portal/   # Sales portal UI tests
+│   │       │   ├── 📁 products/   # Product UI tests
+│   │       │   ├── 📁 customers/  # Customer UI tests
+│   │       │   ├── 📁 metrics/    # Metrics UI tests
+│   │       │   ├── 📁 integration/# Integration tests
+│   │       │   └── ui.setup.ts    # UI test setup
+│   │       ├── 📁 login_form_ak/  # Login form tests
+│   │       └── 📁 herokuapp/      # External site tests
 │   ├── 📁 ui/                     # Page Objects and UI services
 │   │   ├── 📁 pages/              # Page Object Model
+│   │   │   ├── 📁 products/       # Product pages
+│   │   │   ├── 📁 customers/      # Customer pages
+│   │   │   ├── base.page.ts       # Base page class
+│   │   │   ├── base.modal.ts      # Base modal class
+│   │   │   └── *.page.ts          # Specific pages
 │   │   └── 📁 service/            # UI business logic services
+│   │       ├── *.ui-service.ts    # Business logic services
 │   └── 📁 utils/                  # Utility functions
 │       ├── 📁 report/             # Reporting utilities
-│       └── 📁 validation/         # Validation helpers
+│       │   └── logStep.utils.ts   # Step logging decorator
+│       ├── 📁 validation/         # Validation helpers
+│       └── 📁 enum/               # Enum utilities
 ├── 📁 allure-results/             # Allure test results
 ├── 📁 playwright-report/          # Playwright HTML reports
 ├── playwright.config.ts          # Playwright configuration
 ├── tsconfig.json                 # TypeScript configuration
 ├── package.json                  # Dependencies and scripts
-└── .env.dist                     # Environment template
+├── .env.dist                     # Environment template
+└── README.md                     # This file
 ```
 
 ## 🚀 Getting Started
@@ -117,6 +153,12 @@ PW_project/
    # Edit .env file with your credentials
    ```
 
+5. **Run authentication setup (optional):**
+   ```bash
+   npx playwright test --project=setup
+   ```
+   This will create authenticated session state for UI tests.
+
 ## ⚙️ Configuration
 
 ### Environment Variables (.env)
@@ -135,9 +177,18 @@ SALES_PORTAL_API_URL=https://your-api.com
 
 The framework supports multiple test projects:
 
-- **🖥️ Desktop**: Chrome, Firefox, Safari, Edge
-- **📱 Mobile**: Mobile Chrome, Mobile Safari
-- **🔧 API**: Dedicated API testing project
+- **🔧 Setup Project**: Automated authentication setup with session state
+- **🖥️ Sales Portal UI**: Chrome browser with authenticated state (1920x1080)
+- **🔌 API Tests**: Dedicated API testing project
+- **🌐 Chromium**: Headless browser testing
+
+**Key Configuration Features:**
+- **Session Management**: Automatic login and session persistence
+- **Parallel Execution**: 5 workers for optimal performance
+- **Retry Strategy**: 1 retry locally, 2 on CI
+- **Environment Integration**: Dynamic environment info in Allure reports
+- **Trace Collection**: Full traces captured on test failures
+- **Visual Evidence**: Screenshots and videos for debugging
 
 ## 🧪 Running Tests
 
@@ -149,8 +200,17 @@ npm run test:ui            # Run UI tests only
 
 ### Test Categories
 ```bash
-npm run test:ui:smoke      # Smoke tests
-npm run test:ui:regression # Regression tests
+npm run test:ui:smoke      # Smoke tests only
+npm run test:ui:regression # Regression and smoke tests
+```
+
+### Specific Projects
+```bash
+# Run specific test projects
+npx playwright test --project=setup              # Setup only
+npx playwright test --project=sales-portal-ui    # UI tests
+npx playwright test --project=api-tests          # API tests
+npx playwright test --project=chromium           # Headless tests
 ```
 
 ### Interactive Mode
@@ -166,9 +226,25 @@ npx playwright test src/tests/ui/sales-portal/products/
 
 ### Test Tags
 ```bash
-npx playwright test --grep "@smoke"
-npx playwright test --grep "@regression"
-npx playwright test --grep "@e2e"
+# Test types
+npx playwright test --grep "@smoke"        # Smoke tests
+npx playwright test --grep "@regression"   # Regression tests
+npx playwright test --grep "@e2e"          # End-to-end tests
+npx playwright test --grep "@integration"  # Integration tests
+
+# Test layers
+npx playwright test --grep "@api"          # API tests only
+npx playwright test --grep "@ui"           # UI tests only
+
+# Business domains
+npx playwright test --grep "@products"     # Product-related tests
+npx playwright test --grep "@customers"    # Customer-related tests
+npx playwright test --grep "@orders"       # Order-related tests
+npx playwright test --grep "@auth"         # Authentication tests
+
+# Combined tags
+npx playwright test --grep "@smoke.*@products"  # Smoke tests for products
+npx playwright test --grep "@api.*@regression"  # API regression tests
 ```
 
 ## 📊 Test Data Management
@@ -238,8 +314,19 @@ export class AddNewProductUIService {
   async create(productData?: Partial<IProduct>) {
     const data = generateProductData(productData);
     await this.addNewProductPage.fillForm(data);
-    const response = await this.interceptResponse();
+    const response = await this.addNewProductPage.interceptResponse<IProductResponse, any>(
+      apiConfig.endpoints.products,
+      this.addNewProductPage.clickSave.bind(this.addNewProductPage),
+    );
+    expect(response.status).toBe(STATUS_CODES.CREATED);
+    await this.productsListPage.waitForOpened();
     return response.body.Product;
+  }
+
+  @logStep("OPEN ADD NEW PRODUCT PAGE")
+  async open() {
+    await this.addNewProductPage.open("products/add");
+    await this.addNewProductPage.waitForOpened();
   }
 }
 ```
